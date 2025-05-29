@@ -1,13 +1,5 @@
 <?php
 
-/**
- * Lsky Pro图床全版本上传插件
- *
- * @package LskyPro
- * @author 妖月
- * @version 1.0.0
- * @link https://fjwr.xyz
- */
 include_once __DIR__ . '/autoload.php';
 use Typecho\Request;
 use TypechoPlugin\LskyPro\inc\LskyAPIV1;

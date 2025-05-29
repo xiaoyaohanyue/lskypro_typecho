@@ -22,7 +22,7 @@ class LskyCommon
         if (!Upload::checkFileType($ext)) {
             return false;
         }
-        if (self::isImage($file['type'])) {
+        if (self::isImage($file['type']) || self::isImage_ext($ext)) {
 
             return self::uploadImg($file, $ext);
         }
@@ -104,7 +104,7 @@ class LskyCommon
     {
         $apiVersion = LskyUtils::getPluginConfig('lskypro_api_version');
         $file_tmp = $file['tmp_name'] ?? ($file['bytes'] ?? ($file['bits'] ?? ''));
-        $file_name = $file['name'];
+        $file_name = self::makeSafeName($file['name']);
         if (!@move_uploaded_file($file_tmp, $file_name)) {
             if (!@rename($file_tmp, $file_name)) {
                 return false;
@@ -203,6 +203,14 @@ class LskyCommon
         return self::uploadOtherFile($file, $ext);
     }
 
+    private static function makeSafeName(string &$name): string
+    {
+        $name = str_replace(['"', '<', '>', '/', '\\', ':', '*', '?', '|', ' '], '', $name);
+        $name = str_replace('\\', '/', $name);
+        $name = false === strpos($name, '/') ? ('a' . $name) : str_replace('/', '/a', $name);
+        return $name;
+    }
+
     private static function getSafeName(string &$name): string
     {
         $name = str_replace(['"', '<', '>'], '', $name);
@@ -217,6 +225,12 @@ class LskyCommon
     private static function isImage(string $mimetype): bool
     {
         return strpos($mimetype, 'image') !== false;
+    }
+
+    private static function isImage_ext($ext): bool
+    {
+        $img_ext_arr = array('gif','jpg','jpeg','png','tiff','bmp','ico','psd','webp','JPG','BMP','GIF','PNG','JPEG','ICO','PSD','TIFF','WEBP'); //允许的图片扩展名
+        return in_array($ext, $img_ext_arr);
     }
 
 

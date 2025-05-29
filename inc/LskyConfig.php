@@ -73,12 +73,18 @@ class LskyConfig {
 
         $jsUrl = LskyUtils::getPluginUrl() . '/static/js/config.js';
         echo '<script src="' . $jsUrl . '?v=1.0.0"> </script>';
-        $savedAlbumId = LskyUtils::getPluginConfig('lskypro_album_id');
-        $savedStorageId = LskyUtils::getPluginConfig('lskypro_storage_id');
-        if (empty($savedAlbumId)) {
+
+
+        $savedAlbumId = null;
+        $savedStorageId = null;
+        try {
+            $savedAlbumId = LskyUtils::getPluginConfig('lskypro_album_id');
+        } catch (\Exception $e) {
             $savedAlbumId = '1';
         }
-        if (empty($savedStorageId)) {
+        try {
+            $savedStorageId = LskyUtils::getPluginConfig('lskypro_storage_id');
+        } catch (\Exception $e) {
             $savedStorageId = '1';
         }
         echo '<script>var savedAlbumId = "'. $savedAlbumId .'"; var savedStorageId = "'. $savedStorageId .'"; </script>';
